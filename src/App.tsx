@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from "react";
 import avatar from "./assets/img/avatar.png";
 
 function App() {
