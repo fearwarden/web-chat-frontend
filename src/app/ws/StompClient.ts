@@ -7,7 +7,7 @@ export default class StompClient {
   private _subscriptions: AbstractSubscription[] = [];
 
   public connect(): void {
-    const socket = new SockJS("http://localhost:8080/chat");
+    const socket = new SockJS("http://localhost:8080/app/chat");
     this._stompClient = Stomp.over(socket);
 
     if (!this._stompClient) {
@@ -16,6 +16,7 @@ export default class StompClient {
 
     const subMap = new Map<string, Function[]>();
 
+    // Converts every subscription to map and group by topic
     for (const sub of this._subscriptions) {
       if (subMap.has(sub.topic)) {
         subMap.get(sub.topic)!.push(sub.callback);
@@ -42,7 +43,7 @@ export default class StompClient {
   }
 
   public send(endpoint: string, message: any): void {
-    if (this._stompClient == null) return;
+    if (!this._stompClient) return;
     this._stompClient.send(endpoint, {}, JSON.stringify(message));
   }
 
