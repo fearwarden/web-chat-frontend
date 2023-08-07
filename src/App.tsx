@@ -21,20 +21,20 @@ function App() {
 
       <div className="h-screen p-4 sm:ml-96 bg-slate-900">
         <div className="p-4 border-2 border-gray-200 rounded-lg dark:border-gray-700">
-          <div class="grid grid-cols-3 gap-4 mb-4">
-            <div class="flex items-center justify-start h-16 rounded">
+          <div className="grid grid-cols-3 gap-4 mb-4">
+            <div className="flex items-center justify-start h-16 rounded">
               <img className="w-32 h-auto" src={avatar} alt="" />
             </div>
-            <div class="flex items-center justify-center h-16 rounded">
+            <div className="flex items-center justify-center h-16 rounded">
               <h1 className="text-3xl text-slate-300">Some Title</h1>
             </div>
-            <div class="flex items-center justify-center h-16 rounded">
+            <div className="flex items-center justify-center h-16 rounded">
               <h1 className="text-3xl text-slate-300">Some Title</h1>
             </div>
           </div>
         </div>
         <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-4">
-          <div class="flex items-center justify-center h-[44rem] mb-4 rounded bg-gray-50 dark:bg-gray-800"></div>
+          <div className="flex items-center justify-center h-[44rem] mb-4 rounded bg-gray-50 dark:bg-gray-800"></div>
         </div>
       </div>
     </div>
