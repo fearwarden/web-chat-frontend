@@ -1,6 +1,25 @@
+import React, { useState } from "react";
 import avatar from "./assets/img/avatar.png";
+import StompClient from "./app/ws/StompClient";
 
 function App() {
+  const [message, setMessage] = useState<string>("");
+
+  const stompClient = new StompClient();
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setMessage(e.target.value);
+  };
+
+  const handleSend = () => {
+    if (message.trim() !== "") {
+      stompClient.send("/app", {
+        message,
+      });
+      setMessage("");
+    }
+  };
+
   return (
     <div>
       <aside
@@ -33,7 +52,12 @@ function App() {
           </div>
         </div>
         <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-4">
-          <div className="flex items-center justify-center h-[44rem] mb-4 rounded bg-gray-50 dark:bg-gray-800"></div>
+          <div className="flex items-center justify-center h-[44rem] mb-4 rounded bg-gray-50 dark:bg-gray-800">
+            <div>
+              <input type="text" value={message} onChange={handleInputChange} />
+              <button onClick={handleSend}>Send</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
