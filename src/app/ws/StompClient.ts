@@ -7,7 +7,7 @@ export default class StompClient {
   private _subscriptions: AbstractSubscription[] = [];
 
   public connect(): void {
-    const socket = new SockJS("http://localhost:8080/app/chat");
+    const socket = new SockJS("http://localhost:8080/ws");
     this._stompClient = Stomp.over(socket);
 
     if (!this._stompClient) {
