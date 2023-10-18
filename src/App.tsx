@@ -48,7 +48,7 @@ function App() {
       >
         <div className="h-full flex flex-col items-center px-3 py-4 overflow-y-auto bg-gray-800 dark:bg-gray-800">
           <h1 className="text-3xl text-slate-300 mt-4">Web Chat Application</h1>
-          <img src={avatar} className="w-full h-auto mt-10" />
+          <img src={avatar} className="w-full h-auto mt-10" alt="avatar" />
           <h2 className="text-2xl text-slate-300 mt-4">Boris Antonijev</h2>
           <h2 className="text-xl text-slate-300 mt-1">
             borisantonijev@gmail.com
