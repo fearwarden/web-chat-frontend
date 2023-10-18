@@ -70,7 +70,7 @@ function App() {
             </div>
           </div>
         </div>
-        <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-4 overflow-y-auto" style={{maxHeight: "50rem"}}>
+        <div className="p-4 dark:border-gray-700 mt-4 overflow-y-auto" style={{maxHeight: "50rem"}}>
           <div className="flex flex-col gap-4 items-center mb-4 rounded dark:bg-gray-800 h-[44rem]" >
             <ScrollArea className="h-[44rem] w-full rounded-md border">
             </ScrollArea>
