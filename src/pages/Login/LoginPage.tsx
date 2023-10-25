@@ -16,7 +16,6 @@ function LoginPage() {
             setErrorMessage("Email and password are required.")
             return;
         }
-        //TODO: finish logic when axios abstract layer (repository pattern) is finish
         const data = await authRepository.login(email, password);
         console.log(data);
         //TODO: dispatch data into redux when implement of redux is done
