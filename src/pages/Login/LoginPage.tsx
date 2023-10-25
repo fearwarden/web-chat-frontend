@@ -3,11 +3,13 @@ import Router from "../../routers/Router.tsx";
 import Logo from "../../assets/img/login.png";
 import {useEffect, useState} from "react";
 import ErrorMessage from "../../components/notifications/ErrorMessage.tsx";
+import { AuthenticationRepository } from "@/app/api/repositories/authentication/AuthenticationRepository.ts";
 
 function LoginPage() {
     const [email, setEmail] = useState<string>();
     const [password, setPassword] = useState<string>();
     const [errorMessage, setErrorMessage] = useState<string>("");
+    const authRepository = new AuthenticationRepository();
 
     async function handleSignIn() {
         if (!email || !password) {
@@ -15,6 +17,9 @@ function LoginPage() {
             return;
         }
         //TODO: finish logic when axios abstract layer (repository pattern) is finish
+        const data = await authRepository.login(email, password);
+        console.log(data);
+        //TODO: dispatch data into redux when implement of redux is done
     }
 
     useEffect(() => {

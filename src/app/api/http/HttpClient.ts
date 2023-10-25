@@ -1,12 +1,10 @@
 import axios, { AxiosInstance, AxiosResponse, AxiosError } from "axios";
-import { BASE_URL } from "@/constants/constants.ts";
 
 export abstract class HttpClient {
     protected instance: AxiosInstance | undefined;
 
     protected createInstance(): AxiosInstance {
         this.instance = axios.create({
-            baseURL: BASE_URL,
             headers: {
                 "Content-Type": "application/json"
             },
