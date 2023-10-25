@@ -8,4 +8,13 @@ export class AuthenticationRepository extends HttpClient {
         const result = await this.axiosInstance.post(`${this.collection}/login`, { email, password });
         return result.data;
     }
+
+    public async register(email: string, password: string, username: string) {
+        const result = await this.axiosInstance.post(`${this.collection}/register`, {
+            email,
+            password,
+            username
+        });
+        return result.data;
+    }
 }
