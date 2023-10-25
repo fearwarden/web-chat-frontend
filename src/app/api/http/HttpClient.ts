@@ -12,25 +12,25 @@ export abstract class HttpClient {
             },
             withCredentials: true
         });
-        this.initializeRequestInterceptor();
+        //this.initializeRequestInterceptor(); add if necessary
         this.initializeResponseInterceptor();
         return this.instance;
     }
 
-    private initializeRequestInterceptor = () => {
-
-    }
-
+    /*
+    * Response interceptor
+     */
     private initializeResponseInterceptor = () => {
-        this.instance?.interceptors.response.use(this.handleResponse, this.handleResponseError);
+        this.instance?.interceptors.response.use(this.handleResponse, this.handleError);
     }
 
     private handleResponse = ({ data }: AxiosResponse) => data;
-    private handleResponseError = (error: AxiosError) => {
+    private handleError = async (error: AxiosError) => {
         if (error.response?.status === 406) {
             const originalRequest = error.config;
             try {
-                //TODO: call refresh function to send api to the backend
+                await this.refreshToken();
+                return this.instance!(originalRequest!);
             } catch (e) {
                 return Promise.reject(e);
             }
@@ -39,6 +39,10 @@ export abstract class HttpClient {
     };
 
     private async refreshToken() {
-        //TODO: add refresh api
+        try {
+            await this.instance?.post("/api/v1/auth/refresh");
+        } catch (e) {
+            console.log(e);
+        }
     }
 }

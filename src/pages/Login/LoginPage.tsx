@@ -14,6 +14,7 @@ function LoginPage() {
             setErrorMessage("Email and password are required.")
             return;
         }
+        //TODO: finish logic when axios abstract layer (repository pattern) is finish
     }
 
     useEffect(() => {
@@ -34,7 +35,6 @@ function LoginPage() {
                         <h1 className="text-xl font-bold leading-tight tracking-tight md:text-2xl text-white">
                             Sign in to your account
                         </h1>
-                        <form className="space-y-4 md:space-y-6" onSubmit={handleSignIn} noValidate>
                             <div>
                                 <label htmlFor="email" className="block mb-2 text-sm font-medium text-white">Your
                                     email</label>
@@ -57,7 +57,7 @@ function LoginPage() {
                                         password?</a>
                                 </div>
                             </div>
-                            <button type="submit"
+                            <button type="button" onClick={handleSignIn}
                                     className="w-full text-white focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center bg-blue-600 hover:bg-blue-700 focus:ring-primary-800">Sign
                                 in
                             </button>
@@ -66,7 +66,6 @@ function LoginPage() {
                                                                  className="font-medium hover:underline text-blue-500">Sign
                                 up</Link>
                             </p>
-                        </form>
                         {errorMessage && <ErrorMessage message={errorMessage} />}
                     </div>
                 </div>
