@@ -1,11 +1,12 @@
-import {Link} from "react-router-dom"
+import {Link, useNavigate} from "react-router-dom"
 import Router from "../../routers/Router.tsx";
 import Logo from "../../assets/img/login.png";
 import {useEffect, useState} from "react";
 import ErrorMessage from "../../components/notifications/ErrorMessage.tsx";
 import { AuthenticationRepository } from "@/app/api/repositories/authentication/AuthenticationRepository.ts";
-import {useDispatch} from "react-redux";
-import {login} from "@/store/slices/userSlice.ts";
+import { useDispatch } from "react-redux";
+import { login } from "@/store/slices/userSlice.ts";
+import { HOME } from "@/constants/constants.ts";
 
 function LoginPage() {
     const [email, setEmail] = useState<string>();
@@ -13,6 +14,7 @@ function LoginPage() {
     const [errorMessage, setErrorMessage] = useState<string>("");
     const authRepository = new AuthenticationRepository();
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     async function handleSignIn() {
         if (!email || !password) {
@@ -22,6 +24,7 @@ function LoginPage() {
         const data = await authRepository.login(email, password);
         console.log(data);
         dispatch(login(data));
+        navigate(HOME);
     }
 
     useEffect(() => {
