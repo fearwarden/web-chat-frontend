@@ -21,7 +21,6 @@ function LoginPage() {
         }
         const data = await authRepository.login(email, password);
         console.log(data);
-        //TODO: dispatch data into redux when implementation is done
         dispatch(login(data));
     }
 
