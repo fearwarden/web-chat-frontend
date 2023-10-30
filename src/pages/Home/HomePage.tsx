@@ -6,6 +6,7 @@ import avatar from "../../assets/img/avatar.png";
 import StompClient from "../../app/ws/StompClient";
 import SockJS from "sockjs-client";
 import {Stomp} from "@stomp/stompjs";
+import UserRepository, {IUser} from "@/app/api/repositories/crud/user/UserRepository.ts";
 
 function HomePage() {
     const [message, setMessage] = useState<string>("");
@@ -26,7 +27,7 @@ function HomePage() {
     };
 
     useEffect(() => {
-        const socket = new SockJS("http://localhost:8080/ws");
+        const socket = new SockJS("/ws");
         const stompClient = Stomp.over(socket);
 
         stompClient.connect({}, () => {

@@ -18,7 +18,7 @@ function LoginPage() {
         }
         const data = await authRepository.login(email, password);
         console.log(data);
-        //TODO: dispatch data into redux when implement of redux is done
+        //TODO: dispatch data into redux when implementation is done
     }
 
     useEffect(() => {

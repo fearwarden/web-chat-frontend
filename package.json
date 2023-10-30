@@ -13,7 +13,9 @@
     "@radix-ui/react-scroll-area": "^1.0.5",
     "@radix-ui/react-separator": "^1.0.3",
     "@radix-ui/react-slot": "^1.0.2",
+    "@reduxjs/toolkit": "^1.9.7",
     "@stomp/stompjs": "^7.0.0",
+    "@types/react-redux": "^7.1.28",
     "@types/sockjs-client": "^1.5.1",
     "axios": "^1.5.1",
     "class-variance-authority": "^0.7.0",
@@ -24,6 +26,8 @@
     "react-dom": "^18.2.0",
     "react-router": "^6.17.0",
     "react-router-dom": "^6.17.0",
+    "redux-persist": "^6.0.0",
+    "registry.npmjs.org": "^1.0.1",
     "sockjs-client": "^1.6.1",
     "tailwind-merge": "^1.14.0",
     "tailwindcss-animate": "^1.0.7"

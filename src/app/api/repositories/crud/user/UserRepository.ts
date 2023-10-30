@@ -1,4 +1,4 @@
-import {ApiResponse, BaseRepository} from "@/app/api/repositories/crud/BaseRepository.ts";
+import { BaseRepository } from "@/app/api/repositories/crud/BaseRepository.ts";
 
 export interface IUser {
     id: string;
@@ -8,8 +8,4 @@ export interface IUser {
 
 export default class UserRepository extends BaseRepository<IUser> {
     collection = "/api/v1/users";
-
-    async get(id: string): Promise<ApiResponse<IUser>> {
-        return super.get(id);
-    }
 }
