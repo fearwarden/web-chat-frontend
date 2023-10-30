@@ -4,12 +4,15 @@ import Logo from "../../assets/img/login.png";
 import {useEffect, useState} from "react";
 import ErrorMessage from "../../components/notifications/ErrorMessage.tsx";
 import { AuthenticationRepository } from "@/app/api/repositories/authentication/AuthenticationRepository.ts";
+import {useDispatch} from "react-redux";
+import {login} from "@/store/slices/userSlice.ts";
 
 function LoginPage() {
     const [email, setEmail] = useState<string>();
     const [password, setPassword] = useState<string>();
     const [errorMessage, setErrorMessage] = useState<string>("");
     const authRepository = new AuthenticationRepository();
+    const dispatch = useDispatch();
 
     async function handleSignIn() {
         if (!email || !password) {
@@ -19,6 +22,7 @@ function LoginPage() {
         const data = await authRepository.login(email, password);
         console.log(data);
         //TODO: dispatch data into redux when implementation is done
+        dispatch(login(data));
     }
 
     useEffect(() => {
