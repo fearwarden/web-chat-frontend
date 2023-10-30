@@ -22,7 +22,6 @@ function LoginPage() {
             return;
         }
         const data = await authRepository.login(email, password);
-        console.log(data);
         dispatch(login(data));
         navigate(HOME);
     }
