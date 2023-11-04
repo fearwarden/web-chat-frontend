@@ -1,30 +1,19 @@
-import React, {useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area";
 import avatar from "../../assets/img/avatar.png";
-import StompClient from "../../app/ws/StompClient";
+import {useSelector} from "react-redux";
+import {RootState} from "@/store/store.ts";
+import {useNavigate} from "react-router-dom";
+import { LOGIN } from "@/constants/constants.ts";
 import SockJS from "sockjs-client";
 import {Stomp} from "@stomp/stompjs";
-import UserRepository, {IUser} from "@/app/api/repositories/crud/user/UserRepository.ts";
 
 function HomePage() {
     const [message, setMessage] = useState<string>("");
-
-    const stompClient = new StompClient();
-
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setMessage(e.target.value);
-    };
-
-    const handleSend = () => {
-        if (message.trim() !== "") {
-            stompClient.send("/app", {
-                message,
-            });
-            setMessage("");
-        }
-    };
+    const user = useSelector((state: RootState) => state.users);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const socket = new SockJS("/ws");
@@ -39,6 +28,10 @@ function HomePage() {
         })
     }, []);
 
+    if (!user.id) {
+        navigate(LOGIN);
+    }
+
     return (
         <div>
             <aside
@@ -49,9 +42,9 @@ function HomePage() {
                 <div className="h-full flex flex-col items-center px-3 py-4 overflow-y-auto bg-gray-800 dark:bg-gray-800">
                     <h1 className="text-3xl text-slate-300 mt-4">Web Chat Application</h1>
                     <img src={avatar} className="w-full h-auto mt-10" alt="avatar" />
-                    <h2 className="text-2xl text-slate-300 mt-4">Boris Antonijev</h2>
+                    <h2 className="text-2xl text-slate-300 mt-4">{user.username}</h2>
                     <h2 className="text-xl text-slate-300 mt-1">
-                        borisantonijev@gmail.com
+                        {user.email}
                     </h2>
                 </div>
             </aside>

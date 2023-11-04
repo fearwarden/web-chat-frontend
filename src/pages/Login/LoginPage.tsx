@@ -1,16 +1,15 @@
 import {Link, useNavigate} from "react-router-dom"
-import Router from "../../routers/Router.tsx";
 import Logo from "../../assets/img/login.png";
 import {useEffect, useState} from "react";
 import ErrorMessage from "../../components/notifications/ErrorMessage.tsx";
 import { AuthenticationRepository } from "@/app/api/repositories/authentication/AuthenticationRepository.ts";
 import { useDispatch } from "react-redux";
 import { login } from "@/store/slices/userSlice.ts";
-import { HOME } from "@/constants/constants.ts";
+import { HOME, REGISTER } from "@/constants/constants.ts";
 
 function LoginPage() {
-    const [email, setEmail] = useState<string>();
-    const [password, setPassword] = useState<string>();
+    const [email, setEmail] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
     const [errorMessage, setErrorMessage] = useState<string>("");
     const authRepository = new AuthenticationRepository();
     const dispatch = useDispatch();
@@ -71,7 +70,7 @@ function LoginPage() {
                                 in
                             </button>
                             <p className="text-sm font-light text-gray-400">
-                                Don’t have an account yet? <Link to={Router.REGISTER}
+                                Don’t have an account yet? <Link to={REGISTER}
                                                                  className="font-medium hover:underline text-blue-500">Sign
                                 up</Link>
                             </p>

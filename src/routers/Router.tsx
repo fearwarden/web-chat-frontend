@@ -2,23 +2,21 @@ import {createBrowserRouter} from "react-router-dom";
 import HomePage from "../pages/Home/HomePage.tsx";
 import LoginPage from "../pages/Login/LoginPage.tsx";
 import RegisterPage from "../pages/Register/RegisterPage.tsx";
+import { HOME, LOGIN, REGISTER } from "@/constants/constants.ts";
 
 export default class Router {
-    public static readonly HOME = "/";
-    public static readonly LOGIN = "/login"
-    public static readonly REGISTER = "/register"
 
     public static readonly router = createBrowserRouter([
         {
-            path: Router.HOME,
+            path: HOME,
             element: <HomePage />
         },
         {
-            path: Router.LOGIN,
+            path: LOGIN,
             element: <LoginPage />
         },
         {
-            path: Router.REGISTER,
+            path: REGISTER,
             element: <RegisterPage />
         }
     ])
