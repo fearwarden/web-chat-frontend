@@ -7,30 +7,28 @@ import {useSelector} from "react-redux";
 import {RootState} from "@/store/store.ts";
 import {useNavigate} from "react-router-dom";
 import { LOGIN } from "@/constants/constants.ts";
-import SockJS from "sockjs-client";
-import {Stomp} from "@stomp/stompjs";
+import UserRepository from "@/app/api/repositories/crud/user/UserRepository.ts";
+import RoomRepository from "@/app/api/repositories/crud/room/RoomRepository.ts";
 
 function HomePage() {
     const [message, setMessage] = useState<string>("");
     const user = useSelector((state: RootState) => state.users);
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const socket = new SockJS("/ws");
-        const stompClient = Stomp.over(socket);
-
-        stompClient.connect({}, () => {
-            stompClient.subscribe("/topic/public", message => {
-                console.log(message)
-            });
-
-            stompClient.send("/app/chat.sendMessage", {}, "Test");
-        })
-    }, []);
-
     if (!user.id) {
         navigate(LOGIN);
     }
+
+    async function fetchData() {
+        const roomRepo = new RoomRepository();
+        const data = await roomRepo.getMany();
+        console.log(data);
+        return data;
+    }
+
+    useEffect(() => {
+        fetchData();
+    }, []);
 
     return (
         <div>
@@ -68,7 +66,7 @@ function HomePage() {
                         <ScrollArea className="h-[44rem] w-full rounded-md border">
                         </ScrollArea>
                         <div className="flex gap-2 w-full justify-center">
-                            <Input className="w-1/2" type="text" placeholder="message..." />
+                            <Input className="w-1/2" type="text" placeholder="message..." onChange={(e) => setMessage(e.target.value)} />
                             <Button variant="secondary">Send Message</Button>
                         </div>
                     </div>

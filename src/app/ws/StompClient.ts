@@ -1,10 +1,10 @@
 import SockJS from "sockjs-client";
 import { CompatClient, Stomp } from "@stomp/stompjs";
-import AbstractSubscription from "./subscriptions/AbstractSubscription";
+import SubscriptionManager from "./subscriptions/SubscriptionManager.ts";
 
 export default class StompClient {
   private _stompClient: CompatClient | null = null;
-  private _subscriptions: AbstractSubscription[] = [];
+  private _subscriptions: SubscriptionManager | null;
 
   public connect(): void {
     const socket = new SockJS("http://localhost:8080/ws");
@@ -17,7 +17,7 @@ export default class StompClient {
     const subMap = new Map<string, Function[]>();
 
     // Converts every subscription to map and group by topic
-    for (const sub of this._subscriptions) {
+    for (const sub of this._subscriptions) { // uzeti listu message subova is sub managera
       if (subMap.has(sub.topic)) {
         subMap.get(sub.topic)!.push(sub.callback);
       } else {
@@ -26,9 +26,9 @@ export default class StompClient {
     }
 
     this._stompClient.connect({}, (frame: any) => {
-      for (let key of subMap.keys()) {
+      for (const key of subMap.keys()) {
         this._stompClient!.subscribe(key, (message: any) => {
-          for (let callback of subMap.get(key)!) {
+          for (const callback of subMap.get(key)!) {
             callback(message);
           }
         });

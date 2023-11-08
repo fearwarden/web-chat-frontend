@@ -16,7 +16,7 @@ export class ApiResponse<T> {
 const transform = (response: AxiosResponse): Promise<ApiResponse<any>> => {
     return new Promise((resolve, reject) => {
         const result: ApiResponse<any> = {
-            data: response
+            data: response,
         };
         resolve(result);
     });
@@ -30,8 +30,9 @@ export abstract class BaseRepository<T> extends HttpClient implements IBaseRepos
         const { data } = await this.instance.get(`${this.collection}/${id}`).then(transform);
         return data;
     }
-    getMany(): Promise<ApiResponse<T[]>> {
-        throw new Error("Method not implemented.");
+    public async getMany(): Promise<ApiResponse<T[]>> {
+        const { data } = await this.instance.get(`${this.collection}`).then(transform);
+        return data;
     }
     create(data: T): Promise<ApiResponse<T>> {
         throw new Error("Method not implemented.");
