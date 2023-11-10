@@ -7,8 +7,8 @@ export default class SubscriptionManager {
     this._messageSubscription = [];
   }
 
-  public addMessageSubscription(chatRoodId: string): void {
-    const subscription = new MessageSubscription(chatRoodId);
+  public addMessageSubscription(): void {
+    const subscription = new MessageSubscription();
     this.messageSubscription.push(subscription);
   }
 

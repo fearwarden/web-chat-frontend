@@ -1,6 +1,12 @@
 import {BaseRepository} from "@/app/api/repositories/crud/BaseRepository.ts";
 
 export interface IRoomRepository {
+    id: string;
+    users: string[];
+    messages: Message[];
+}
+
+export interface Message {
     roomId: string;
     senderId: string;
     receiverId: string;

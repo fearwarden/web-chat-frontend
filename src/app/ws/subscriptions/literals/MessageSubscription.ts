@@ -2,17 +2,21 @@ import {ISubscription} from "@/app/ws/subscriptions/ISubscription.ts";
 import {IMessage} from "@stomp/stompjs";
 
 export default class MessageSubscription implements ISubscription {
-  private readonly _topic: string;
+  private _topic: string;
 
-  constructor(chatRoomId: string) {
-    this._topic = `/user/${chatRoomId}`;
+  constructor(topic: string = "/app") {
+    this._topic = topic;
   }
 
   callback(message: IMessage): void {
-    console.log(message);
+    JSON.parse(message.body);
   }
 
   get topic(): string {
     return this._topic;
+  }
+
+  set topic(value: string) {
+    this._topic = value;
   }
 }

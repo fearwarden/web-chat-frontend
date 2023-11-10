@@ -6,6 +6,10 @@ export default class StompClient {
   private _stompClient: CompatClient | null = null;
   private _subscriptions: SubscriptionManager | null;
 
+  constructor() {
+    this._subscriptions = null;
+  }
+
   public connect(): void {
     const socket = new SockJS("http://localhost:8080/ws");
     this._stompClient = Stomp.over(socket);
@@ -14,14 +18,20 @@ export default class StompClient {
       throw new Error("Stomp client is not initialized.");
     }
 
+    if (!this._subscriptions) {
+      this._subscriptions = new SubscriptionManager();
+    }
+
     const subMap = new Map<string, Function[]>();
 
     // Converts every subscription to map and group by topic
-    for (const sub of this._subscriptions) { // uzeti listu message subova is sub managera
-      if (subMap.has(sub.topic)) {
-        subMap.get(sub.topic)!.push(sub.callback);
-      } else {
-        subMap.set(sub.topic, [sub.callback]);
+    if (Array.isArray(this._subscriptions.messageSubscription)) {
+      for (const sub of this._subscriptions.messageSubscription) { // uzeti listu message subova is sub managera
+        if (subMap.has(sub.topic)) {
+          subMap.get(sub.topic)!.push(sub.callback);
+        } else {
+          subMap.set(sub.topic, [sub.callback]);
+        }
       }
     }
 
@@ -43,8 +53,11 @@ export default class StompClient {
   }
 
   public send(endpoint: string, message: any): void {
-    if (!this._stompClient) return;
-    this._stompClient.send(endpoint, {}, JSON.stringify(message));
+    if (!this.stompClient) {
+      console.log("Stomp client nije init u send.")
+      return;
+    }
+    this.stompClient.send(endpoint, {}, JSON.stringify(message));
   }
 
   public get stompClient(): CompatClient | null {
