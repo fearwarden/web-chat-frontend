@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {Input} from "@/components/ui/input"
 import {Button} from "@/components/ui/button"
 import {ScrollArea} from "@/components/ui/scroll-area";
@@ -9,7 +9,6 @@ import {useNavigate} from "react-router-dom";
 import {LOGIN} from "@/constants/constants.ts";
 import RoomRepository, {IRoomRepository} from "@/app/api/repositories/crud/room/RoomRepository.ts";
 import StompClient from "@/app/ws/StompClient.ts";
-import {CompatClient} from "@stomp/stompjs";
 
 interface IMessage {
     roomId: string;
@@ -32,6 +31,7 @@ function HomePage() {
     const [rooms, setRooms] = useState<IRoomRepository[]>([]);
     const user = useSelector((state: RootState) => state.users);
     const navigate = useNavigate();
+    const scrollAreaRef = useRef<HTMLDivElement | null>(null);
 
     if (!user.id) {
         navigate(LOGIN);
@@ -53,7 +53,7 @@ function HomePage() {
             action: UserAction.COMMENTED,
             timestamp: Date.now()
         }
-        stompClient.send("/app/private-message", mes)
+        stompClient.send("/app/private-message", mes);
     }
 
     useEffect(() => {
@@ -109,7 +109,7 @@ function HomePage() {
                 </div>
                 <div className="p-4 dark:border-gray-700 mt-4 overflow-y-auto" style={{maxHeight: "50rem"}}>
                     <div className="flex flex-col gap-4 items-center mb-4 rounded dark:bg-gray-800 h-[44rem]">
-                        <ScrollArea className="h-[44rem] w-full rounded-md border">
+                        <ScrollArea className="h-[44rem] w-full rounded-md border" ref={scrollAreaRef}>
                         </ScrollArea>
                         <div className="flex gap-2 w-full justify-center">
                             <Input className="w-1/2" type="text" placeholder="message..."
