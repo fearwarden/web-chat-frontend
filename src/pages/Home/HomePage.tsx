@@ -29,6 +29,7 @@ function HomePage() {
     const [message, setMessage] = useState<string>("");
     const [stompClient, setStompClient] = useState<StompClient | null>(null);
     const [rooms, setRooms] = useState<IRoomRepository[]>([]);
+    const [currentRoom, setCurrentRoom] = useState<IRoomRepository | null>(null);
     const user = useSelector((state: RootState) => state.users);
     const navigate = useNavigate();
     const scrollAreaRef = useRef<HTMLDivElement | null>(null);
@@ -44,16 +45,24 @@ function HomePage() {
     }
 
     function sendMessage() {
-        if (!stompClient) return;
-        const mes: IMessage = {
-            roomId: rooms[0].id,
-            senderId: rooms[0].users[0],
-            receiverId: rooms[0].users[1],
+        if (!stompClient || !currentRoom) return;
+        const receiverId = currentRoom.users.filter(id => id !== user.id);
+        const messageContent: IMessage = {
+            roomId: currentRoom.id,
+            senderId: user.id,
+            receiverId: receiverId[0], //TODO: AKO budes ubacivao grupe, promeniti tip receiverId jer ce tada biti lista
             content: message,
             action: UserAction.COMMENTED,
             timestamp: Date.now()
         }
-        stompClient.send("/app/private-message", mes);
+        stompClient.send("/app/private-message", messageContent);
+        scrollAreaRef.current!.innerHTML = message;
+        setMessage("");
+    }
+
+    function subscribeToRoom(room: IRoomRepository) {
+        setCurrentRoom(room);
+        //TODO: manage subscription to the current room
     }
 
     useEffect(() => {
@@ -85,7 +94,7 @@ function HomePage() {
                         rooms.map((room, index) => {
                             return (
                                 <div key={index}>
-                                    <p className="text-2xl text-slate-300 mt-4">{room.id}</p>
+                                    <button className="text-2xl text-slate-300 mt-4" onClick={() => subscribeToRoom(room)}>{room.id}</button>
                                 </div>
                             )
                         })
@@ -108,15 +117,18 @@ function HomePage() {
                     </div>
                 </div>
                 <div className="p-4 dark:border-gray-700 mt-4 overflow-y-auto" style={{maxHeight: "50rem"}}>
-                    <div className="flex flex-col gap-4 items-center mb-4 rounded dark:bg-gray-800 h-[44rem]">
-                        <ScrollArea className="h-[44rem] w-full rounded-md border" ref={scrollAreaRef}>
-                        </ScrollArea>
-                        <div className="flex gap-2 w-full justify-center">
-                            <Input className="w-1/2" type="text" placeholder="message..."
-                                   onChange={(e) => setMessage(e.target.value)}/>
-                            <Button variant="secondary" onClick={sendMessage}>Send Message</Button>
+                    {currentRoom ? (
+                        <div className="flex flex-col gap-4 items-center mb-4 rounded dark:bg-gray-800 h-[44rem]">
+                            <h2 className="text-xl text-slate-300 mt-1">{currentRoom.id}</h2>
+                            <ScrollArea className="h-[44rem] w-full rounded-md border text-white" ref={scrollAreaRef}>
+                            </ScrollArea>
+                            <div className="flex gap-2 w-full justify-center">
+                                <Input value={message} className="w-1/2" type="text" placeholder="message..."
+                                       onChange={(e) => setMessage(e.target.value)}/>
+                                <Button variant="secondary" onClick={sendMessage}>Send Message</Button>
+                            </div>
                         </div>
-                    </div>
+                    ) : <h1 className="text-3xl text-slate-300 text-center">Welcome to WebChat Application</h1>}
                 </div>
             </div>
         </div>
