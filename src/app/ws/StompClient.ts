@@ -1,70 +1,39 @@
+import {CompatClient, IMessage, Stomp} from "@stomp/stompjs";
 import SockJS from "sockjs-client";
-import { CompatClient, Stomp } from "@stomp/stompjs";
-import SubscriptionManager from "./subscriptions/SubscriptionManager.ts";
+import ObserverManager from "@/app/ws/observers/ObserverManager.ts";
+import {MessageDto} from "@/pages/Home/HomePage.tsx";
 
-export default class StompClient {
-  private _stompClient: CompatClient | null = null;
-  private _subscriptions: SubscriptionManager | null;
+export default class StompClient extends ObserverManager{
+    private _client: CompatClient | null = null;
 
-  constructor() {
-    this._subscriptions = null;
-  }
+    constructor() {
+        super();
+        const socket = new SockJS("/ws");
+        this.client = Stomp.over(socket);
 
-  public connect(): void {
-    const socket = new SockJS("http://localhost:8080/ws");
-    this._stompClient = Stomp.over(socket);
-
-    if (!this._stompClient) {
-      throw new Error("Stomp client is not initialized.");
-    }
-
-    if (!this._subscriptions) {
-      this._subscriptions = new SubscriptionManager();
-    }
-
-    const subMap = new Map<string, Function[]>();
-
-    // Converts every subscription to map and group by topic
-    if (Array.isArray(this._subscriptions.messageSubscription)) {
-      for (const sub of this._subscriptions.messageSubscription) { // uzeti listu message subova is sub managera
-        if (subMap.has(sub.topic)) {
-          subMap.get(sub.topic)!.push(sub.callback);
-        } else {
-          subMap.set(sub.topic, [sub.callback]);
+        this.client.onConnect = () => {
+            console.log("Connection established.")
         }
-      }
+
+        this.client.activate();
     }
 
-    this._stompClient.connect({}, (frame: any) => {
-      for (const key of subMap.keys()) {
-        this._stompClient!.subscribe(key, (message: any) => {
-          for (const callback of subMap.get(key)!) {
-            callback(message);
-          }
-        });
-      }
-    });
-  }
-
-  public disconnect(): void {
-    if (this._stompClient) {
-      this._stompClient.disconnect();
+    public subscribeToTopic(topic: string) {
+        if (!this.client) return;
+        this.client.subscribe(topic, (message: IMessage) => {
+            this.notifyObservers(JSON.parse(message.body));
+        })
     }
-  }
 
-  public send(endpoint: string, message: any): void {
-    if (!this.stompClient) {
-      console.log("Stomp client nije init u send.")
-      return;
+    public sendMessage(destination: string, message: MessageDto): void {
+        if (!this.client) return;
+        this.client.publish({ destination, body: JSON.stringify(message) })
     }
-    this.stompClient.send(endpoint, {}, JSON.stringify(message));
-  }
 
-  public get stompClient(): CompatClient | null {
-    return this._stompClient;
-  }
-
-  public set stompClient(value: CompatClient | null) {
-    this._stompClient = value;
-  }
+    set client(value: CompatClient) {
+        this._client = value;
+    }
+    get client(): CompatClient | null {
+        return this._client;
+    }
 }

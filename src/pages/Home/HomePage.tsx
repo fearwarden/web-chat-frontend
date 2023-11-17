@@ -1,7 +1,4 @@
-import {useEffect, useRef, useState} from "react";
-import {Input} from "@/components/ui/input"
-import {Button} from "@/components/ui/button"
-import {ScrollArea} from "@/components/ui/scroll-area";
+import {useEffect, useState} from "react";
 import avatar from "../../assets/img/avatar.png";
 import {useSelector} from "react-redux";
 import {RootState} from "@/store/store.ts";
@@ -9,8 +6,9 @@ import {useNavigate} from "react-router-dom";
 import {LOGIN} from "@/constants/constants.ts";
 import RoomRepository, {IRoomRepository} from "@/app/api/repositories/crud/room/RoomRepository.ts";
 import StompClient from "@/app/ws/StompClient.ts";
+import ChatRoom from "@/pages/Home/components/ChatRoom.tsx";
 
-interface IMessage {
+export interface MessageDto {
     roomId: string;
     senderId: string;
     receiverId: string;
@@ -26,13 +24,12 @@ enum UserAction {
 }
 
 function HomePage() {
-    const [message, setMessage] = useState<string>("");
     const [stompClient, setStompClient] = useState<StompClient | null>(null);
     const [rooms, setRooms] = useState<IRoomRepository[]>([]);
     const [currentRoom, setCurrentRoom] = useState<IRoomRepository | null>(null);
     const user = useSelector((state: RootState) => state.users);
     const navigate = useNavigate();
-    const scrollAreaRef = useRef<HTMLDivElement | null>(null);
+
 
     if (!user.id) {
         navigate(LOGIN);
@@ -42,22 +39,6 @@ function HomePage() {
         const roomRepo = new RoomRepository();
         const data = await roomRepo.getMany();
         setRooms(data.data!);
-    }
-
-    function sendMessage() {
-        if (!stompClient || !currentRoom) return;
-        const receiverId = currentRoom.users.filter(id => id !== user.id);
-        const messageContent: IMessage = {
-            roomId: currentRoom.id,
-            senderId: user.id,
-            receiverId: receiverId[0], //TODO: AKO budes ubacivao grupe, promeniti tip receiverId jer ce tada biti lista
-            content: message,
-            action: UserAction.COMMENTED,
-            timestamp: Date.now()
-        }
-        stompClient.send("/app/private-message", messageContent);
-        scrollAreaRef.current!.innerHTML = message;
-        setMessage("");
     }
 
     function subscribeToRoom(room: IRoomRepository) {
@@ -71,7 +52,6 @@ function HomePage() {
 
     useEffect(() => {
         const client = new StompClient();
-        client.connect();
         setStompClient(client);
     }, []);
 
@@ -118,16 +98,7 @@ function HomePage() {
                 </div>
                 <div className="p-4 dark:border-gray-700 mt-4 overflow-y-auto" style={{maxHeight: "50rem"}}>
                     {currentRoom ? (
-                        <div className="flex flex-col gap-4 items-center mb-4 rounded dark:bg-gray-800 h-[44rem]">
-                            <h2 className="text-xl text-slate-300 mt-1">{currentRoom.id}</h2>
-                            <ScrollArea className="h-[44rem] w-full rounded-md border text-white" ref={scrollAreaRef}>
-                            </ScrollArea>
-                            <div className="flex gap-2 w-full justify-center">
-                                <Input value={message} className="w-1/2" type="text" placeholder="message..."
-                                       onChange={(e) => setMessage(e.target.value)}/>
-                                <Button variant="secondary" onClick={sendMessage}>Send Message</Button>
-                            </div>
-                        </div>
+                        <ChatRoom currentRoom={currentRoom} stompClient={stompClient} user={user} />
                     ) : <h1 className="text-3xl text-slate-300 text-center">Welcome to WebChat Application</h1>}
                 </div>
             </div>
