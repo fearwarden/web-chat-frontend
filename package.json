@@ -31,7 +31,8 @@
     "registry.npmjs.org": "^1.0.1",
     "sockjs-client": "^1.6.1",
     "tailwind-merge": "^1.14.0",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "@react-buddy/ide-toolbox": "^2.4.0"
   },
   "devDependencies": {
     "@types/node": "^20.6.2",
